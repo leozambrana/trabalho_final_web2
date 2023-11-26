@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.form-label {
+    @apply block mb-2;
+}
+
+.form-input {
+    @apply w-full p-2 mb-3 border-[#ccc] border rounded;
+}
+
+.form-button {
+    @apply w-full p-3 bg-[#3490dc] text-white border-none rounded cursor-pointer;
+}
+
+.search-input {
+    @apply p-2 border border-gray-300 rounded mt-10 w-[50%];
+}

@@ -5,7 +5,9 @@ const HomeHeader = () => {
     return (
         <header className='bg-black'>
             <div className='flex justify-between px-20 py-10 text-white'>
-                <span>Artigos</span>
+                <span>
+                    <Link href='/'>Artigos</Link>
+                </span>
                 <nav>
                     <ul>
                         <li>
