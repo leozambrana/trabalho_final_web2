@@ -42,21 +42,18 @@ Template de artigo:
 
 ## 2. Usuários
 2.1 Listar Todos os Usuários
-
 * Endpoint: GET /users
 * Descrição: Retorna uma lista de todos os usuários.
 
 2.2 Obter Detalhes de um Usuário
-
 * Endpoint: GET /users/:id
 * Descrição: Retorna detalhes de um usuário específico com base no ID.
 
 2.3 Criar Novo Usuário
-
 * Endpoint: POST /users
 * Descrição: Cria um novo usuário.
-2.4 Atualizar Informações de um Usuário
 
+2.4 Atualizar Informações de um Usuário
 * Endpoint: PUT /users/:id
 * Descrição: Atualiza as informações de um usuário existente com base no ID.
 
