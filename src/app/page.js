@@ -1,10 +1,10 @@
-/*use client*/
+'use client';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 
 const HomeHeader = dynamic(() => import("../components/HeaderLogin/page"), { ssr: false });
-const { FaHeart } = dynamic(() => import("react-icons/fa"), { ssr: false });
+const FaHeart = dynamic(() => import("react-icons/fa").then((module) => module.FaHeart), { ssr: false });
 
 export default function Home() {
   const [data, setData] = useState([]);
