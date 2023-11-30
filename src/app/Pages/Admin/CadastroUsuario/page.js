@@ -1,51 +1,29 @@
 'use client';
-import { MdDeleteForever } from "react-icons/md";
+import {MdDeleteForever, MdSearch} from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import HeaderAdmin from '@/src/components/HeaderAdmin/page';
 
 const CadastroUsuario = () => {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const api = "//localhost:3001";
+  const [author_name, setNome] = useState('');
+  const [author_user, setUser] = useState('');
+  const [author_email, setEmail] = useState('');
+  const [author_pwd, setSenha] = useState('');
+  const [author_level, setLevel] = useState('');
+  const [author_status, setStatus] = useState('on');
   const [editingUserId, setEditingUserId] = useState(null);
   const [editingUserSenha, setEditingUserSenha] = useState('');
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    setUsers([
-      {
-        nome: 'leo',
-        email: 'leo@gmail.com',
-        admin: false,
-        senha: '12345',
-        id: 1,
-      },
-      {
-        nome: 'leo',
-        email: 'leo@gmail.com',
-        admin: false,
-        id: 2,
-      },
-      {
-        nome: 'leo',
-        email: 'leo@gmail.com',
-        admin: false,
-        id: 3,
-      },
-      {
-        nome: 'leo',
-        email: 'leo@gmail.com',
-        admin: false,
-        id: 4,
-      },
-    ])
+    fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('sua_api/lista-de-usuarios');
+      const response = await axios.get(`${api}/users`);
       setUsers(response.data);
     } catch (error) {
       console.error('Erro ao obter a lista de usuários:', error);
@@ -57,24 +35,35 @@ const CadastroUsuario = () => {
 
     try {
       if (editingUserId) {
-        await axios.put(`sua_api/atualizar-usuario/${editingUserId}`, {
-          nome,
-          email,
-          senha,
+        await axios.put(`${api}/users/${editingUserId}`, {
+          author_name,
+          author_user,
+          author_email,
+          author_level,
+          author_status,
+          author_pwd,
         });
       } else {
-        await axios.post('sua_api/cadastro-usuarios', {
-          nome,
-          email,
-          senha,
+        const author_create_data = new Date();
+        await axios.post(`${api}/users`, {
+          author_name,
+          author_user,
+          author_email,
+          author_level,
+          author_status,
+          author_pwd,
+          author_create_data
         });
       }
 
       fetchUsers();
 
       setNome('');
+      setUser('');
       setEmail('');
       setSenha('');
+      setStatus('on');
+      setLevel('');
       setEditingUserId(null);
       setEditingUserSenha('');
     } catch (error) {
@@ -83,18 +72,21 @@ const CadastroUsuario = () => {
   };
 
   const handleEdit = (id) => {
-    const userToEdit = users.find((user) => user.id === id);
-    console.log(userToEdit);
-    setNome(userToEdit.nome);
-    setEmail(userToEdit.email);
+    const userToEdit = users.find((user) => user._id === id);
+
+    setNome(userToEdit.author_name);
+    setUser(userToEdit.author_user);
+    setEmail(userToEdit.author_email);
+    setLevel(userToEdit.author_level);
+    setStatus(userToEdit.author_status);
     setSenha('');
-    setEditingUserSenha(userToEdit.senha);
+    setEditingUserSenha(userToEdit.author_pwd);
     setEditingUserId(id);
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`sua_api/delete-usuario/${id}`);
+      await axios.delete(`${api}/users/${id}`);
 
       fetchUsers();
     } catch (error) {
@@ -116,9 +108,21 @@ const CadastroUsuario = () => {
               type="text"
               id="nome"
               name="nome"
-              value={nome}
+              value={author_name}
               onChange={(e) => setNome(e.target.value)}
               className="form-input"
+            />
+
+            <label htmlFor="user" className="form-label">
+              Usuário:
+            </label>
+            <input
+                type="text"
+                id="user"
+                name="user"
+                value={author_user}
+                onChange={(e) => setUser(e.target.value)}
+                className="form-input"
             />
 
             <label htmlFor="email" className="form-label">
@@ -128,10 +132,37 @@ const CadastroUsuario = () => {
               type="email"
               id="email"
               name="email"
-              value={email}
+              value={author_email}
               onChange={(e) => setEmail(e.target.value)}
               className="form-input"
             />
+
+            <label htmlFor="ativo" className="form-label">
+              Ativo
+            </label>
+            <input
+                type="checkbox"
+                id="ativo"
+                name="ativo"
+                value="on"
+                checked={(author_status === "on")}
+                onChange={(e) => setStatus((e.target.checked) ? "on" : "off")}
+                className="form-input"
+            />
+
+            <label htmlFor="level" className="form-label">
+              Nível
+            </label>
+            <select
+                id="level"
+                name="level"
+                onChange={(e) => {
+                  setLevel(e.target.value)
+                }}
+                className="form-input">
+            <option value="user">Usuário</option>
+            <option value="admin">Administrador</option>
+            </select>
 
             {editingUserId && (
               <>
@@ -156,7 +187,7 @@ const CadastroUsuario = () => {
               type="password"
               id="senha"
               name="senha"
-              value={senha}
+              value={author_pwd}
               onChange={(e) => setSenha(e.target.value)}
               className="form-input"
             />
@@ -170,15 +201,18 @@ const CadastroUsuario = () => {
         <div className="bg-white p-6 rounded-lg shadow-md max-h-[500px] overflow-auto">
           <h2 className="text-2xl mb-4">Lista de Usuários</h2>
           {users.map((user) => (
-            <div key={user.id} className='bg-white p-6 rounded-lg shadow-md my-10 flex flex-col gap-5'>
-              <p>Nome: {user.nome}</p>
-              <p>Email: {user.email}</p>
-              <p>Admin: {user.admin ? 'Sim' : 'Não'}</p>
+            <div key={user._id} className='bg-white p-6 rounded-lg shadow-md my-10 flex flex-col gap-5'>
+              <p>Nome: {user.author_name}</p>
+              <p>Usuário: {user.author_user}</p>
+              <p>Email: {user.author_email}</p>
+              <p>Admin: {(user.author_level === "admin") ? 'Sim' : 'Não'}</p>
+              <p>Ativo: {(user.author_status === "on") ? 'Sim' : 'Não'}</p>
+              <p>{(user.author_create_data) ? `Data de Criação: ${user.author_create_data}` : ""}</p>
               <div className='flex justify-center gap-10 items-center my-3'>
-                <button onClick={() => handleEdit(user.id)}>
+                <button onClick={() => handleEdit(user._id)}>
                   <FaRegEdit className='text-green-500 text-4xl' />
                 </button>
-                <button onClick={() => handleDelete(user.id)}>
+                <button onClick={() => handleDelete(user._id)}>
                   <MdDeleteForever className='text-red-500 text-4xl' />
                 </button>
               </div>

@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useState, useRef } from 'react';
 
 const LoginPage = () => {
+  const api = "//localhost:3001";
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const usernameRef = useRef(null);
@@ -15,12 +16,12 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      // const response = await axios.post('sua_api/login', {
-      //   username,
-      //   password,
-      // });
+      const response = await axios.post(`${api}/login`, {
+        username,
+        password,
+      });
 
-      // console.log('Resposta da API:', response.data);
+      console.log('Resposta da API:', response.data);
       router.push('/Pages/Admin');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
