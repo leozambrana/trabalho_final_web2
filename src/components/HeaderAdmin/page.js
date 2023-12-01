@@ -23,10 +23,10 @@ const HeaderAdmin = (cadastro) => {
                 <nav>
                     <ul className='flex gap-10'>
                         <li>
-                            <Link href="/Pages/Admin/CadastroArtigo">Cadastro artigo</Link>
+                            <Link href="/Admin/CadastroArtigo">Cadastro artigo</Link>
                         </li>
                         <li>
-                            <Link href="/Pages/Admin/CadastroUsuario">Cadastro usuários</Link>
+                            <Link href="/Admin/CadastroUsuario">Cadastro usuários</Link>
                         </li>
                     </ul>
                 </nav>

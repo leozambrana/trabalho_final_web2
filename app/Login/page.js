@@ -22,7 +22,7 @@ const LoginPage = () => {
       });
 
       console.log('Resposta da API:', response.data);
-      router.push('/Pages/Admin');
+      router.push('/Admin');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
     }

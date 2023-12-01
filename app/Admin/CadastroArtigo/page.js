@@ -237,7 +237,7 @@ const CadastroArtigo = () => {
                 <button onClick={() => handleDelete(artigo._id)}>
                   <MdDeleteForever className='text-red-500 text-4xl' />
                 </button>
-                <a href={`/Pages/Artigo?id=${artigo._id}`}>
+                <a href={`/Artigo/${artigo._id}`}>
                   <MdSearch className='text-black-500 text-4xl' />
                 </a>
               </div>

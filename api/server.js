@@ -16,7 +16,7 @@ app.use(cors());
 app.use(
   session({
     secret: "chave_secreta_hihihi_eu_tenho_um_segredo",
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: { secure: false }
   })
@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 const authenticateUser = (req, res, next) => {
-
+  console.log(req.session);
   if (true || req.session && req.session.authenticated) {
     next();
   } else {

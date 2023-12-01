@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import dynamic from 'next/dynamic';
+import {MdSearch} from "react-icons/md";
 
-const HomeHeader = dynamic(() => import("../components/HeaderLogin/page"), { ssr: false });
+const HomeHeader = dynamic(() => import("@/src/components/HeaderLogin/page"), { ssr: false });
 const FaHeart = dynamic(() => import("react-icons/fa").then((module) => module.FaHeart), { ssr: false });
 
-export default function Home() {
+export default function Page() {
   const api = "//localhost:3001";
   const [data, setData] = useState([]);
   const [featuredData, setFeaturedData] = useState([]);
@@ -75,15 +76,29 @@ export default function Home() {
   };
 
   const filteredFeaturedData = featuredData.filter((artigo) =>
-      artigo.kb_title.toLowerCase().includes(featuredSearch.toLowerCase())
+      {
+        return (
+            artigo.kb_title.toLowerCase().includes(featuredSearch.toLowerCase()) ||
+            artigo.kb_keywords.toLowerCase().includes(featuredSearch.toLowerCase())
+        )
+      }
   );
 
-  const filteredMostLikedData = mostLikedData.filter((artigo) =>
-    artigo.kb_title.toLowerCase().includes(mostLikedSearch.toLowerCase())
+  const filteredMostLikedData = mostLikedData.filter((artigo) =>  {
+      return (
+          artigo.kb_title.toLowerCase().includes(mostLikedSearch.toLowerCase()) ||
+          artigo.kb_keywords.toLowerCase().includes(mostLikedSearch.toLowerCase())
+      )
+    }
   );
 
-  const filteredData = data.filter((artigo) =>
-    artigo.kb_title.toLowerCase().includes(dataSearch.toLowerCase())
+  const filteredData = data.filter((artigo) =>{
+        return (
+            artigo.kb_title.toLowerCase().includes(dataSearch.toLowerCase()) ||
+            artigo.kb_keywords.toLowerCase().includes(dataSearch.toLowerCase())
+        )
+  }
+
   );
 
   return (
@@ -106,16 +121,20 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-3 gap-4 m-20">
             {filteredFeaturedData.map((featuredArticle) => (
-                <a href={`/Pages/Artigo?id=${featuredArticle._id}`} key={featuredArticle._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
+                <div key={featuredArticle._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
                   <h3>{featuredArticle.kb_title}</h3>
                   <p>{featuredArticle.kb_body}</p>
+                  <p style={{fontSize:10}}>{featuredArticle.kb_keywords}</p>
                   <div className="flex items-center">
+                    <a href={`/Artigo/${featuredArticle._id}`}>
+                      <MdSearch className='text-black-500' />
+                    </a>
                     <button onClick={() => handleLike(featuredArticle._id)}>
                       <FaHeart className={(currentLikes.includes(featuredArticle._id)) ? 'text-red-500' : ''} />
                     </button>
                     <span>{(featuredArticle.kb_liked_count) ? featuredArticle.kb_liked_count : 0}</span>
                   </div>
-                </a>
+                </div>
             ))}
           </div>
           <div className="flex justify-center flex-col items-center my-10">
@@ -135,16 +154,20 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-3 gap-4 m-20">
             {filteredMostLikedData.map((artigoCurtido) => (
-              <a href={`/Pages/Artigo?id=${artigoCurtido._id}`} key={artigoCurtido._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
+              <div key={artigoCurtido._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
                 <h3>{artigoCurtido.kb_title}</h3>
                 <p>{artigoCurtido.kb_body}</p>
+                <p style={{fontSize:10}}>{artigoCurtido.kb_keywords}</p>
                 <div className="flex items-center">
+                  <a href={`/Artigo/${artigoCurtido._id}`}>
+                    <MdSearch className='text-black-500' />
+                  </a>
                   <button onClick={() => handleLike(artigoCurtido._id)}>
                     <FaHeart className={(currentLikes.includes(artigoCurtido._id)) ? 'text-red-500' : ''} />
                   </button>
                   <span>{(artigoCurtido.kb_liked_count) ? artigoCurtido.kb_liked_count : 0}</span>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
           <div className="flex justify-center flex-col items-center my-10">
@@ -161,16 +184,21 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-3 gap-4 m-20">
             {filteredData.map((artigo) => (
-              <a href={`/Pages/Artigo?id=${artigo._id}`} key={artigo._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
+              <div  key={artigo._id} className="flex justify-center items-center flex-col gap-10 p-4 border border-gray-300">
                 <h3>{artigo.kb_title}</h3>
                 <p>{artigo.kb_body}</p>
+                <p style={{fontSize:10}}>{artigo.kb_keywords}</p>
                 <div className="flex items-center">
+                  <a href={`/Artigo/${artigo._id}`}>
+                    <MdSearch className='text-black-500' />
+                  </a>
                   <button onClick={() => handleLike(artigo._id)}>
                     <FaHeart className={(currentLikes.includes(artigo._id)) ? 'text-red-500' : ''} />
                   </button>
                   <span>{(artigo.kb_liked_count) ? artigo.kb_liked_count : 0}</span>
+
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </section>

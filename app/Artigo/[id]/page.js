@@ -1,6 +1,7 @@
 'use client';
 import HeaderLogin from '@/src/components/HeaderLogin/page';
 import React, {useEffect, useState} from 'react';
+import { useParams } from 'next/navigation'
 import Link from 'next/link';
 import axios from 'axios';
 const url = require('url');
@@ -10,7 +11,8 @@ import {MdDeleteForever, MdSearch} from "react-icons/md";
 
 const ArtigoPage = () => {
   const api = "//localhost:3001";
-  const article = "656799ba9eda87a62357534d";
+  const params = useParams();
+  const article = params.id;
   const [artigo, setArtigo] = useState({});
 
   const fetchArtigos = async () => {
