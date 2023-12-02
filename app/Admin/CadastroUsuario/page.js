@@ -1,23 +1,40 @@
-'use client';
-import {MdDeleteForever, MdSearch} from "react-icons/md";
+"use client";
+import { MdDeleteForever, MdSearch } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import HeaderAdmin from '@/src/components/HeaderAdmin/page';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import HeaderAdmin from "@/src/components/HeaderAdmin/page";
+import { useRouter } from "next/navigation";
 
 const CadastroUsuario = () => {
   const api = "//localhost:3001";
-  const [author_name, setNome] = useState('');
-  const [author_user, setUser] = useState('');
-  const [author_email, setEmail] = useState('');
-  const [author_pwd, setSenha] = useState('');
-  const [author_level, setLevel] = useState('');
-  const [author_status, setStatus] = useState('on');
+  const [author_name, setNome] = useState("");
+  const [author_user, setUser] = useState("");
+  const [author_email, setEmail] = useState("");
+  const [author_pwd, setSenha] = useState("");
+  const [author_level, setLevel] = useState("");
+  const [author_status, setStatus] = useState("on");
   const [editingUserId, setEditingUserId] = useState(null);
-  const [editingUserSenha, setEditingUserSenha] = useState('');
+  const [editingUserSenha, setEditingUserSenha] = useState("");
   const [users, setUsers] = useState([]);
+  const router = useRouter();
+
+
+  const checkAuth = async () => {
+    try {
+      const response = await axios.post(`${api}/auth`);
+      if (response.data.authenticated) {
+        console.log("ok")
+      } else {
+        router.push("/404");
+      }
+    } catch (error) {
+      console.error("Erro ao verificar autenticação:", error);
+    }
+  };
 
   useEffect(() => {
+    checkAuth();
     fetchUsers();
   }, []);
 
@@ -26,7 +43,7 @@ const CadastroUsuario = () => {
       const response = await axios.get(`${api}/users`);
       setUsers(response.data);
     } catch (error) {
-      console.error('Erro ao obter a lista de usuários:', error);
+      console.error("Erro ao obter a lista de usuários:", error);
     }
   };
 
@@ -52,22 +69,22 @@ const CadastroUsuario = () => {
           author_level,
           author_status,
           author_pwd,
-          author_create_data
+          author_create_data,
         });
       }
 
       fetchUsers();
 
-      setNome('');
-      setUser('');
-      setEmail('');
-      setSenha('');
-      setStatus('on');
-      setLevel('');
+      setNome("");
+      setUser("");
+      setEmail("");
+      setSenha("");
+      setStatus("on");
+      setLevel("");
       setEditingUserId(null);
-      setEditingUserSenha('');
+      setEditingUserSenha("");
     } catch (error) {
-      console.error('Erro ao cadastrar usuário:', error);
+      console.error("Erro ao cadastrar usuário:", error);
     }
   };
 
@@ -79,7 +96,7 @@ const CadastroUsuario = () => {
     setEmail(userToEdit.author_email);
     setLevel(userToEdit.author_level);
     setStatus(userToEdit.author_status);
-    setSenha('');
+    setSenha("");
     setEditingUserSenha(userToEdit.author_pwd);
     setEditingUserId(id);
   };
@@ -90,17 +107,19 @@ const CadastroUsuario = () => {
 
       fetchUsers();
     } catch (error) {
-      console.error('Erro ao deletar usuário:', error);
+      console.error("Erro ao deletar usuário:", error);
     }
   };
 
   return (
     <>
-      <HeaderAdmin cadastro/>
+      <HeaderAdmin cadastro />
       <main className="container mx-auto mt-8 grid grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded-lg shadow-md max-h-[500px] overflow-auto flex flex-col items-center justify-center">
-          <h2 className="text-2xl mb-4">{editingUserId ? 'Editar Usuário' : 'Cadastro de Usuário'}</h2>
-          <form onSubmit={handleSubmit} className='flex flex-col w-full'>
+          <h2 className="text-2xl mb-4">
+            {editingUserId ? "Editar Usuário" : "Cadastro de Usuário"}
+          </h2>
+          <form onSubmit={handleSubmit} className="flex flex-col w-full">
             <label htmlFor="nome" className="form-label">
               Nome:
             </label>
@@ -117,12 +136,12 @@ const CadastroUsuario = () => {
               Usuário:
             </label>
             <input
-                type="text"
-                id="user"
-                name="user"
-                value={author_user}
-                onChange={(e) => setUser(e.target.value)}
-                className="form-input"
+              type="text"
+              id="user"
+              name="user"
+              value={author_user}
+              onChange={(e) => setUser(e.target.value)}
+              className="form-input"
             />
 
             <label htmlFor="email" className="form-label">
@@ -141,27 +160,28 @@ const CadastroUsuario = () => {
               Ativo
             </label>
             <input
-                type="checkbox"
-                id="ativo"
-                name="ativo"
-                value="on"
-                checked={(author_status === "on")}
-                onChange={(e) => setStatus((e.target.checked) ? "on" : "off")}
-                className="form-input"
+              type="checkbox"
+              id="ativo"
+              name="ativo"
+              value="on"
+              checked={author_status === "on"}
+              onChange={(e) => setStatus(e.target.checked ? "on" : "off")}
+              className="form-input"
             />
 
             <label htmlFor="level" className="form-label">
               Nível
             </label>
             <select
-                id="level"
-                name="level"
-                onChange={(e) => {
-                  setLevel(e.target.value)
-                }}
-                className="form-input">
-            <option value="user">Usuário</option>
-            <option value="admin">Administrador</option>
+              id="level"
+              name="level"
+              onChange={(e) => {
+                setLevel(e.target.value);
+              }}
+              className="form-input"
+            >
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
             </select>
 
             {editingUserId && (
@@ -193,7 +213,7 @@ const CadastroUsuario = () => {
             />
 
             <button type="submit" className="form-button">
-              {editingUserId ? 'Atualizar Usuário' : 'Cadastrar Usuário'}
+              {editingUserId ? "Atualizar Usuário" : "Cadastrar Usuário"}
             </button>
           </form>
         </div>
@@ -201,19 +221,26 @@ const CadastroUsuario = () => {
         <div className="bg-white p-6 rounded-lg shadow-md max-h-[500px] overflow-auto">
           <h2 className="text-2xl mb-4">Lista de Usuários</h2>
           {users.map((user) => (
-            <div key={user._id} className='bg-white p-6 rounded-lg shadow-md my-10 flex flex-col gap-5'>
+            <div
+              key={user._id}
+              className="bg-white p-6 rounded-lg shadow-md my-10 flex flex-col gap-5"
+            >
               <p>Nome: {user.author_name}</p>
               <p>Usuário: {user.author_user}</p>
               <p>Email: {user.author_email}</p>
-              <p>Admin: {(user.author_level === "admin") ? 'Sim' : 'Não'}</p>
-              <p>Ativo: {(user.author_status === "on") ? 'Sim' : 'Não'}</p>
-              <p>{(user.author_create_data) ? `Data de Criação: ${user.author_create_data}` : ""}</p>
-              <div className='flex justify-center gap-10 items-center my-3'>
+              <p>Admin: {user.author_level === "admin" ? "Sim" : "Não"}</p>
+              <p>Ativo: {user.author_status === "on" ? "Sim" : "Não"}</p>
+              <p>
+                {user.author_create_data
+                  ? `Data de Criação: ${user.author_create_data}`
+                  : ""}
+              </p>
+              <div className="flex justify-center gap-10 items-center my-3">
                 <button onClick={() => handleEdit(user._id)}>
-                  <FaRegEdit className='text-green-500 text-4xl' />
+                  <FaRegEdit className="text-green-500 text-4xl" />
                 </button>
                 <button onClick={() => handleDelete(user._id)}>
-                  <MdDeleteForever className='text-red-500 text-4xl' />
+                  <MdDeleteForever className="text-red-500 text-4xl" />
                 </button>
               </div>
             </div>

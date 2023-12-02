@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 const MONGO_URI = process.env.MONGO_URI;
-
+let sessionVar = false;
 app.use(express.json());
 app.use(cors());
 
@@ -18,7 +18,7 @@ app.use(
     secret: "chave_secreta_hihihi_eu_tenho_um_segredo",
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { secure: false },
   })
 );
 
@@ -61,8 +61,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 const authenticateUser = (req, res, next) => {
-  console.log(req.session);
-  if (true || req.session && req.session.authenticated) {
+  if ((sessionVar = true)) {
     next();
   } else {
     res.status(401).json({ message: "Não autorizado" });
@@ -74,9 +73,12 @@ app.post("/login", async (req, res) => {
     const author_user = req.body.username;
     const author_pwd = req.body.password;
 
-    const user = await User.findOne({ author_user:author_user, author_pwd:author_pwd });
+    const user = await User.findOne({
+      author_user: author_user,
+      author_pwd: author_pwd,
+    });
     if (user) {
-      req.session.authenticated = true;
+      sessionVar = true;
       req.session.save();
 
       res.json({ message: "Login bem-sucedido" });
@@ -86,6 +88,20 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.post("/auth", async (req, res) => {
+  if (sessionVar) {
+    res.json({ authenticated: true });
+  } else {
+    res.json({ authenticated: false });
+  }
+});
+
+app.post("/logout", async (req, res) => {
+  sessionVar = false;
+  req.session.destroy();
+  res.json({ message: "Logout bem-sucedido" });
 });
 
 app.use((req, res, next) => {
@@ -122,7 +138,6 @@ app.get("/users/:id", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   try {
-
     const user = new User(req.body);
     const newUser = await user.save();
     res.status(201).json(newUser);
@@ -133,7 +148,6 @@ app.post("/users", async (req, res) => {
 
 app.put("/users/:id", async (req, res) => {
   try {
-
     const { id } = req.params;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -180,18 +194,17 @@ app.get("/articles/:id", async (req, res) => {
 });
 
 app.post("/articles/:id/like", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const like = req.body.like;
-      const updatedArticle = await Article.findByIdAndUpdate(
-        id,
-        { $inc: { kb_liked_count: like } },
-      );
-      res.json(updatedArticle);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  });
+  try {
+    const { id } = req.params;
+    const like = req.body.like;
+    const updatedArticle = await Article.findByIdAndUpdate(id, {
+      $inc: { kb_liked_count: like },
+    });
+    res.json(updatedArticle);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
 app.post("/articles", async (req, res) => {
   try {

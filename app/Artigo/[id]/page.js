@@ -2,12 +2,8 @@
 import HeaderLogin from '@/src/components/HeaderLogin/page';
 import React, {useEffect, useState} from 'react';
 import { useParams } from 'next/navigation'
-import Link from 'next/link';
 import axios from 'axios';
 const url = require('url');
-import { useRouter } from 'next/router';
-import {FaRegEdit} from "react-icons/fa";
-import {MdDeleteForever, MdSearch} from "react-icons/md";
 
 const ArtigoPage = () => {
   const api = "//localhost:3001";

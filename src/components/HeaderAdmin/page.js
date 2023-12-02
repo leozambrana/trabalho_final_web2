@@ -3,9 +3,16 @@ import React from 'react';
 import Link from 'next/link';
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const HeaderAdmin = (cadastro) => {
     const router = useRouter();
+    const api = "//localhost:3001";
+    const handleLogout = async () => {
+        console.log('aqui');
+        const response = await axios.post(`${api}/logout`);
+        console.log(response);
+    };
 
     return (
         <header className='bg-black'>
@@ -27,6 +34,9 @@ const HeaderAdmin = (cadastro) => {
                         </li>
                         <li>
                             <Link href="/Admin/CadastroUsuario">Cadastro usuários</Link>
+                        </li>
+                        <li>
+                            <Link onClick={() => handleLogout()} href="/">Logout</Link>
                         </li>
                     </ul>
                 </nav>
